@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>812</width>
+    <height>597</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Python车牌识别</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="MplCanvas" name="mplwidget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>801</width>
+      <height>551</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>812</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_file">
+    <property name="title">
+     <string>文件</string>
+    </property>
+    <addaction name="action_open"/>
+    <addaction name="action_saveas"/>
+    <addaction name="separator"/>
+    <addaction name="action_reload"/>
+    <addaction name="separator"/>
+    <addaction name="action_quit"/>
+   </widget>
+   <widget class="QMenu" name="menu_proc">
+    <property name="title">
+     <string>图像预处理</string>
+    </property>
+    <addaction name="action_set"/>
+    <addaction name="separator"/>
+    <addaction name="action_proc"/>
+   </widget>
+   <widget class="QMenu" name="menu_recog">
+    <property name="title">
+     <string>神经网络识别</string>
+    </property>
+    <addaction name="action_train"/>
+    <addaction name="separator"/>
+    <addaction name="action_rec"/>
+   </widget>
+   <widget class="QMenu" name="menu_help">
+    <property name="title">
+     <string>帮助</string>
+    </property>
+    <addaction name="action_about"/>
+   </widget>
+   <addaction name="menu_file"/>
+   <addaction name="menu_proc"/>
+   <addaction name="menu_recog"/>
+   <addaction name="menu_help"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="action_open">
+   <property name="text">
+    <string>打开</string>
+   </property>
+  </action>
+  <action name="action_saveas">
+   <property name="text">
+    <string>另存为</string>
+   </property>
+  </action>
+  <action name="action_reload">
+   <property name="text">
+    <string>重新加载</string>
+   </property>
+  </action>
+  <action name="action_quit">
+   <property name="text">
+    <string>退出</string>
+   </property>
+  </action>
+  <action name="action_set">
+   <property name="text">
+    <string>输入归一化宽度和高度</string>
+   </property>
+  </action>
+  <action name="action_proc">
+   <property name="text">
+    <string>一次性预处理</string>
+   </property>
+  </action>
+  <action name="action_train">
+   <property name="text">
+    <string>训练网络</string>
+   </property>
+  </action>
+  <action name="action_rec">
+   <property name="text">
+    <string>识别</string>
+   </property>
+  </action>
+  <action name="action_about">
+   <property name="text">
+    <string>关于</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>MplCanvas</class>
+   <extends>QWidget</extends>
+   <header>mplcanvas.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
