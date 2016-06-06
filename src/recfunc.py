@@ -19,7 +19,8 @@ def process(image, WD, HG):
     gradient_sharp(img)
     # 第四步：去离散杂点噪声
     remove_scatter_noise(img)
-    # 第五步：
+    # 第五步：倾斜度调整
+    adjust_slope(img)
     return img
     
 def rgb2gray(image):
@@ -92,4 +93,5 @@ def remove_scatter_noise(image):
                 image[noise[0], noise[1]] = 255
         
         
-    
+def adjust_slope(image):
+    pass
