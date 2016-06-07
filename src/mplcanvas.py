@@ -32,7 +32,7 @@ class MplData(object):
         self.WD, self.HG = para
         
     def process_img(self):
-        self.img = recfunc.process(self.img, self.WD, self.HG)
+        self.img, self.cha = recfunc.process(self.img, self.WD, self.HG)
     
 class MplCanvas(QtGui.QWidget):
     """主窗体小部件，利用matplotlib"""
