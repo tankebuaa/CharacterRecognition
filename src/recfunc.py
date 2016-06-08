@@ -198,7 +198,7 @@ def adjust(image, cha, WD, HG):
         I = np.full((HG, WD), 255, dtype = np.uint8)
         for pos in pix:
             x = min(int(h*(pos[0] - p[0])), HG-1)
-            y = min(int(w*(pos[1] - p[2])), WD-1)
+            y = min(int((h+w)/2*(pos[1] - p[2])), WD-1)
             I[x, y] = 0
         Ic.append(I)
         for j in range(HG):
