@@ -2,7 +2,6 @@
 
 import cv2
 import numpy as np
-from numpy import linalg as LA
 
 def process(image, WD, HG):
     """一次性预处理
@@ -37,12 +36,13 @@ def rgb2gray(image):
     return img
 
 def gray2whiteblack(image):
-    """使用Otsu自适应滤波，将灰度图转化为二值图像
+    """使用二值滤波，将灰度图转化为二值图像
     @param image 输入的灰度图像
     
     @return img 二值图像
     """
-    retVal, img = cv2.threshold(image,200,255,cv2.THRESH_OTSU)
+    retVal, img = cv2.threshold(image,200,255,cv2.THRESH_BINARY)
+    #retVal, img = cv2.threshold(image,200,255,cv2.THRESH_OTSU)
     return img
 
 def gradient_sharp(image):
@@ -202,22 +202,17 @@ def adjust(image, cha, WD, HG):
     @param WD, HG 归一化尺寸
     """
     Ic = []
-    N = len(cha)
-    # 归一化后角点坐标
-    B = np.array([[0, 0, HG-1, HG-1], [0, WD-1, 0, WD-1]])
-    for i in range(N):
+    for i in range(len(cha)):
         pix = cha[i][0]#像素
         p = cha[i][1]#坐标值
-        # 图像四个角点坐标
-        A = np.array([[p[0], p[0], p[1], p[1]], [p[2], p[3], p[2], p[3]]], dtype = np.float)
-        # H*A = B
-        H = B@A.T@LA.inv(A@A.T)
-        # 对每个字符区域像素点，变换到归一化图像矩阵I
+        h = HG/(p[1] - p[0])#字符高度缩放因子
+        w = WD/(p[3] - p[2])#字符宽度缩放因子
+        #存放归一化字符
         I = np.full((HG, WD), 255, dtype = np.uint8)
         for pos in pix:
-            M = np.array([[pos[0]], [pos[1]]], dtype = np.float)
-            m = H@M
-            I[np.floor(m[0, 0]), np.floor(m[1, 0])] = 0
+            x = min(int(h*(pos[0] - p[0])), HG-1)
+            y = min(int(w*(pos[1] - p[2])), WD-1)
+            I[x, y] = 0
         Ic.append(I)
         for j in range(HG):
             for k in range(WD):

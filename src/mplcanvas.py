@@ -1,18 +1,11 @@
 # -*- coding : utf-8 -*-
-import functools
+
 import cv2
 import matplotlib.pyplot as plt
 from PyQt4 import QtGui, QtCore
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolBar
 import recfunc
-
-def log(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        print("running %s...."%func.__name__)
-        return func(*args, **kwargs)
-    return wrapper
 
 class MplData(object):
     """存放和处理图片数据的类"""
@@ -54,7 +47,7 @@ class MplCanvas(QtGui.QWidget):
         layout.addWidget(self.toolbar)
         
         self.setLayout(layout)
-        self.ax = plt.gca()
+        self.ax = plt.subplot(111)
         self.ax.set_xticks([])
         self.ax.set_yticks([])
         
@@ -74,6 +67,9 @@ class MplCanvas(QtGui.QWidget):
         # 读入图片
         self.data.read_img(filename)
         # 显示
+        self.ax.cla()
+        self.ax.set_xticks([])
+        self.ax.set_yticks([])
         self.show_img()
         
     def save_as(self, filename):
@@ -83,6 +79,9 @@ class MplCanvas(QtGui.QWidget):
     def reload(self):
         """重新加载原图像并显示"""
         self.data.read_img(self.data.filename)
+        self.ax.cla()
+        self.ax.set_xticks([])
+        self.ax.set_yticks([])
         self.show_img()
         
     def set_para(self, para):
@@ -93,3 +92,8 @@ class MplCanvas(QtGui.QWidget):
         """一次性预处理"""
         self.data.process_img()
         self.show_img()
+        # 画出字符外框
+        for everyCha in self.data.cha:
+            L = everyCha[1]
+            self.ax.plot([L[2], L[3], L[3], L[2], L[2]], [L[0], L[0], L[1], L[1], L[0]], 'r-', linewidth=2)
+        self.canvas.draw()

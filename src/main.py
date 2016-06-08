@@ -74,7 +74,7 @@ class RecWindow(Ui_MainWindow):
     
 def main():
     """主函数"""
-    sys.setrecursionlimit(2000)
+    sys.setrecursionlimit(10000)
     app = QtGui.QApplication(sys.argv)
     calib = RecWindow()
     calib.show()
