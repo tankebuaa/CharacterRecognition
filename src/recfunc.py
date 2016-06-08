@@ -20,8 +20,8 @@ def process(image, WD, HG):
     # 第四步：去离散杂点噪声,并得到分割后的字符区域特征（像素和范围）
     cha = remove_scatter_noise(img)
     # 第五步：归一化调整
-    adjust(img, cha, WD, HG)
-    return (img, cha)
+    Ic = adjust(img, cha, WD, HG)
+    return (img, cha, Ic)
     
 def rgb2gray(image):
     """将RGB图像转化为灰度图
@@ -67,12 +67,12 @@ def remove_scatter_noise(image):
     """去离散杂点噪声
     @param image 输入的二值图像
     
-    @return 
+    @return chal 字符区域描述子列表，（连通像素，区域坐标边界）
     """
     # 图片尺寸
     rows, cols = image.shape
     # 设置判断噪声的长度阈值为30
-    LEN = 100
+    LEN = 90
     # 标识数组刚开始都是false,没有被访问过
     biaozhi = np.zeros((rows, cols), dtype = np.bool)
     # 字符区域特征字典
@@ -114,20 +114,16 @@ def detect_connect(i, j, biaozhi, image, rows, cols, con, area):
     #右
     if j+1 <cols:
         if biaozhi[i,j+1] == False:
-            if image[i,j+1] == 255:
-                biaozhi[i,j+1] = True
-            else:
-                biaozhi[i,j+1] = True
+            biaozhi[i,j+1] = True
+            if image[i,j+1] == 0:
                 con.append((i, j+1))
                 area[3] = max(area[3],j+1)
                 detect_connect(i, j+1, biaozhi, image, rows, cols, con, area)
     #右下
     if i+1<rows and j+1<cols:
         if biaozhi[i+1,j+1] == False:
-            if image[i+1,j+1] == 255:
-                biaozhi[i+1,j+1] = True
-            else:
-                biaozhi[i+1,j+1] = True
+            biaozhi[i+1,j+1] = True
+            if image[i+1,j+1] == 0:
                 con.append((i+1,j+1))
                 area[1] = max(area[1], i+1)
                 area[3] = max(area[3], j+1)
@@ -135,20 +131,16 @@ def detect_connect(i, j, biaozhi, image, rows, cols, con, area):
     #下
     if i+1 < rows:
         if biaozhi[i+1,j] == False:
-            if image[i+1,j] == 255:
-                biaozhi[i+1,j] = True
-            else:
-                biaozhi[i+1,j] = True
+            biaozhi[i+1,j] = True
+            if image[i+1,j] == 0:
                 con.append((i+1,j))
                 area[1] = max(area[1], i+1)
                 detect_connect(i+1, j, biaozhi, image, rows, cols, con, area)
     #左下
     if i+1 <rows and j-1>=0:
         if biaozhi[i+1,j-1] == False:
-            if image[i+1,j-1] == 255:
-                biaozhi[i+1,j-1] = True
-            else:
-                biaozhi[i+1,j-1] = True
+            biaozhi[i+1,j-1] = True
+            if image[i+1,j-1] == 0:
                 con.append((i+1,j-1))
                 area[1] = max(area[1], i+1)
                 area[2] = min(area[2], j-1)
@@ -156,20 +148,16 @@ def detect_connect(i, j, biaozhi, image, rows, cols, con, area):
     #左
     if j-1>=0:
         if biaozhi[i,j-1] == False:
-            if image[i, j-1] == 255:
-                biaozhi[i,j-1] = True
-            else:
-                biaozhi[i,j-1] = True
+            biaozhi[i,j-1] = True
+            if image[i, j-1] == 0:
                 con.append((i,j-1))
                 area[2] = min(area[2], j-1)
                 detect_connect(i, j-1, biaozhi, image, rows, cols, con, area)
     # 左上
     if i-1 >=0 and j-1>=0:
         if biaozhi[i-1,j-1] == False:
-            if image[i-1, j-1] == 255:
-                biaozhi[i-1,j-1] = True
-            else:
-                biaozhi[i-1,j-1] = True
+            biaozhi[i-1,j-1] = True
+            if image[i-1, j-1] == 0:
                 con.append((i-1,j-1))
                 area[0] = min(area[0], i-1)
                 area[2] = min(area[2], j-1)
@@ -177,20 +165,16 @@ def detect_connect(i, j, biaozhi, image, rows, cols, con, area):
     # 上
     if i-1>=0:
         if biaozhi[i-1,j] == False:
-            if image[i-1, j] == 255:
-                biaozhi[i-1,j] = True
-            else:
-                biaozhi[i-1,j] = True
+            biaozhi[i-1,j] = True
+            if image[i-1, j] == 0:
                 con.append((i-1,j))
                 area[0] = min(area[0], i-1)
                 detect_connect(i-1, j, biaozhi, image, rows, cols, con, area)
     # 右上
     if i-1>=0 and j+1<cols:
         if biaozhi[i-1,j+1] == False:
-            if image[i-1, j+1] == 255:
-                biaozhi[i-1,j+1] = True
-            else:
-                biaozhi[i-1,j+1] = True
+            biaozhi[i-1,j+1] = True
+            if image[i-1, j+1] == 0:
                 con.append((i-1,j+1))
                 area[0] = min(area[0], i-1)
                 area[3] = max(area[3], j+1)
@@ -201,6 +185,8 @@ def adjust(image, cha, WD, HG):
     @param image 二值化图片
     @param cha 列表（字符区域像素点和坐标范围）
     @param WD, HG 归一化尺寸
+
+    @return Ic 归一化字符特征矩阵列表
     """
     Ic = []
     for i in range(len(cha)):
@@ -218,3 +204,4 @@ def adjust(image, cha, WD, HG):
         for j in range(HG):
             for k in range(WD):
                 image[j, k+i*WD] = I[j, k]
+    return Ic
