@@ -58,6 +58,6 @@ class Ui_SetDialog(QtGui.QDialog):
         SetDialog.setWindowTitle(_translate("SetDialog", "设置归一化图像尺寸", None))
         self.label_w.setText(_translate("SetDialog", "请输入归一化后每个字符的宽度", None))
         self.label_h.setText(_translate("SetDialog", "请输入归一化后每个字符的高度", None))
-        self.lineEdit_w.setText(_translate("SetDialog", "8", None))
-        self.lineEdit_h.setText(_translate("SetDialog", "16", None))
+        self.lineEdit_w.setText(_translate("SetDialog", "12", None))
+        self.lineEdit_h.setText(_translate("SetDialog", "18", None))
 

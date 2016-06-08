@@ -41,7 +41,8 @@ def gray2whiteblack(image):
     
     @return img 二值图像
     """
-    retVal, img = cv2.threshold(image,200,255,cv2.THRESH_BINARY)
+    img = cv2.GaussianBlur(image,(5,5), 0)
+    retVal, img = cv2.threshold(img,200,255,cv2.THRESH_BINARY)
     #retVal, img = cv2.threshold(image,200,255,cv2.THRESH_OTSU)
     return img
 
@@ -70,8 +71,8 @@ def remove_scatter_noise(image):
     """
     # 图片尺寸
     rows, cols = image.shape
-    # 设置判断噪声的长度阈值为15
-    LEN = 15
+    # 设置判断噪声的长度阈值为30
+    LEN = 100
     # 标识数组刚开始都是false,没有被访问过
     biaozhi = np.zeros((rows, cols), dtype = np.bool)
     # 字符区域特征字典

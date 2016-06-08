@@ -11,8 +11,8 @@ class MplData(object):
     """存放和处理图片数据的类"""
     def __init__(self):
         self.img = None
-        self.WD = 8
-        self.HG = 16
+        self.WD = 12
+        self.HG = 18
     
     def read_img(self, name):
         self.filename = name
