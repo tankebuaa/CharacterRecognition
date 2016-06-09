@@ -195,13 +195,19 @@ def adjust(image, cha, WD, HG):
         h = HG/(p[1] - p[0])#字符高度缩放因子
         w = WD/(p[3] - p[2])#字符宽度缩放因子
         #存放归一化字符
-        I = np.full((HG, WD), 255, dtype = np.uint8)
+        I = np.zeros((1, HG*WD),dtype = np.double)
         for pos in pix:
             x = min(int(h*(pos[0] - p[0])), HG-1)
             y = min(int((h+w)/2*(pos[1] - p[2])), WD-1)
-            I[x, y] = 0
+            I[0, x*WD+y] = 1
+            image[x, y+i*WD] = 0
         Ic.append(I)
-        for j in range(HG):
-            for k in range(WD):
-                image[j, k+i*WD] = I[j, k]
     return Ic
+
+def creat_net(H, W):
+    """利用随机数，初始化网络参数
+    @param H，W输入层的数目，则输入层数为H*W
+    
+    @return 
+    """
+    pass

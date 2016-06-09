@@ -54,7 +54,7 @@ class RecWindow(Ui_MainWindow):
     
     def train(self):
         """训练网络"""
-        pass
+        self.mplwidget.train()
     
     def recognize(self):
         """字符识别"""

@@ -27,6 +27,15 @@ class MplData(object):
     def process_img(self):
         self.img, self.cha, self.features = recfunc.process(self.img, self.WD, self.HG)
     
+    def train(self):
+        self.inputLayerSize = self.WD * self.HG
+        self.hiddenLayerSize = 100
+        self.outLayersize = 10
+        self.featuresResult = 4*[0,1,2,3,4,5,6,7,8,9]
+        #self.net = recfunc.creat_net(self.inputLayerSize, self.hiddenLayerSize, self.outLayersize)
+        #self.net = recfunc.SGD(self.features, self.featuresResult, self.net)
+    
+    
 class MplCanvas(QtGui.QWidget):
     """主窗体小部件，利用matplotlib"""
     def __init__(self, parent = None):
@@ -97,3 +106,6 @@ class MplCanvas(QtGui.QWidget):
             L = everyCha[1]
             self.ax.plot([L[2], L[3], L[3], L[2], L[2]], [L[0], L[0], L[1], L[1], L[0]], 'r-', linewidth=2)
         self.canvas.draw()
+        
+    def train(self):
+        self.data.train()
