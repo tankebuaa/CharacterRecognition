@@ -63,6 +63,7 @@ class MplCanvas(QtGui.QWidget):
         self.ax = plt.subplot(111)
         self.ax.set_xticks([])
         self.ax.set_yticks([])
+        plt.tight_layout()
         
     def show_img(self):
         """显示图像"""
@@ -80,7 +81,7 @@ class MplCanvas(QtGui.QWidget):
         # 读入图片
         self.data.read_img(filename)
         # 显示
-        self.ax.cla()
+        plt.cla()
         self.ax.set_xticks([])
         self.ax.set_yticks([])
         self.show_img()
@@ -92,7 +93,7 @@ class MplCanvas(QtGui.QWidget):
     def reload(self):
         """重新加载原图像并显示"""
         self.data.read_img(self.data.filename)
-        self.ax.cla()
+        plt.cla()
         self.ax.set_xticks([])
         self.ax.set_yticks([])
         self.show_img()
@@ -119,4 +120,7 @@ class MplCanvas(QtGui.QWidget):
         """识别"""
         self.data.recognize()
         #显示结果
+        out = 'RESULT:' + str(self.data.result)
+        plt.annotate(out, xy = (0, 0), xytext = (0, -50))
+        self.canvas.draw()
         

@@ -65,7 +65,7 @@ class RecWindow(Ui_MainWindow):
     
     def about(self):
         """关于"""
-        QtGui.QMessageBox.about(self, "关于", "author@TANKE\n version 0.0")
+        QtGui.QMessageBox.about(self, "关于", "author@TANKE\n version 1.0")
     
     def closeEvent(self, event):
         """重载关闭窗口事件"""
