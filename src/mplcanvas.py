@@ -38,7 +38,6 @@ class MplData(object):
         
     def recognize(self):
         self.result = recfunc.rec(self.features,self.w1, self.b1, self.w2, self.b2)
-        print(self.result)
     
 class MplCanvas(QtGui.QWidget):
     """主窗体小部件，利用matplotlib"""
