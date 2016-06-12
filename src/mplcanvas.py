@@ -1,5 +1,6 @@
 # -*- coding : utf-8 -*-
 
+import numpy as np
 import cv2
 import matplotlib.pyplot as plt
 from PyQt4 import QtGui, QtCore
@@ -29,12 +30,15 @@ class MplData(object):
     
     def train(self):
         self.inputLayerSize = self.WD * self.HG
-        self.hiddenLayerSize = 100
+        self.hiddenLayerSize = 10
         self.outLayersize = 10
-        self.featuresResult = 4*[0,1,2,3,4,5,6,7,8,9]
-        #self.net = recfunc.creat_net(self.inputLayerSize, self.hiddenLayerSize, self.outLayersize)
-        #self.net = recfunc.SGD(self.features, self.featuresResult, self.net)
-    
+        self.featuresResult = np.array(4*[0,1,2,3,4,5,6,7,8,9])
+        self.w1, self.b1, self.w2, self.b2 = recfunc.creat_net(self.inputLayerSize, self.hiddenLayerSize, self.outLayersize)
+        self.w1, self.b1, self.w2, self.b2 = recfunc.SGD(self.features, self.featuresResult, self.inputLayerSize, self.outLayersize, self.w1, self.b1, self.w2, self.b2)
+        
+    def recognize(self):
+        self.result = recfunc.rec(self.features,self.w1, self.b1, self.w2, self.b2)
+        print(self.result)
     
 class MplCanvas(QtGui.QWidget):
     """主窗体小部件，利用matplotlib"""
@@ -108,4 +112,11 @@ class MplCanvas(QtGui.QWidget):
         self.canvas.draw()
         
     def train(self):
+        """神经网络学习训练"""
         self.data.train()
+        
+    def recognize(self):
+        """识别"""
+        self.data.recognize()
+        #显示结果
+        

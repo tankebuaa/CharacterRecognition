@@ -46,7 +46,10 @@ class RecWindow(Ui_MainWindow):
         self.dlg.setupUi(self.dlg)
         if self.dlg.exec_():
             para = (int(self.dlg.lineEdit_w.text()), int(self.dlg.lineEdit_h.text()))
-        self.mplwidget.set_para(para)
+        try:
+            self.mplwidget.set_para(para)
+        except UnboundLocalError:
+            pass
     
     def process(self):
         """一次性预处理"""
@@ -58,7 +61,7 @@ class RecWindow(Ui_MainWindow):
     
     def recognize(self):
         """字符识别"""
-        pass
+        self.mplwidget.recognize()
     
     def about(self):
         """关于"""

@@ -195,19 +195,83 @@ def adjust(image, cha, WD, HG):
         h = HG/(p[1] - p[0])#字符高度缩放因子
         w = WD/(p[3] - p[2])#字符宽度缩放因子
         #存放归一化字符
-        I = np.zeros((1, HG*WD),dtype = np.double)
+        I = np.zeros(HG*WD,dtype = np.double)
         for pos in pix:
             x = min(int(h*(pos[0] - p[0])), HG-1)
             y = min(int((h+w)/2*(pos[1] - p[2])), WD-1)
-            I[0, x*WD+y] = 1
+            I[x*WD+y] = 1
             image[x, y+i*WD] = 0
         Ic.append(I)
-    return Ic
+    return np.array(Ic)
 
-def creat_net(H, W):
+def creat_net(inputLayerSize, hiddenLayerSize, outputLayerSize):
     """利用随机数，初始化网络参数
-    @param H，W输入层的数目，则输入层数为H*W
+    @param inputLayerSize 输入层数
+    @param hiddenLayerSize 中间层
+    @param outputLayerSize 输出层
     
-    @return 
+    @return w1,b1,w2,b2 网络结构参数
     """
-    pass
+    w1 = 2*(np.random.rand(inputLayerSize, hiddenLayerSize) - 0.5)
+    b1 = 2*(np.random.rand(hiddenLayerSize) - 0.5)
+    w2 = 2*(np.random.rand(hiddenLayerSize, outputLayerSize) - 0.5)
+    b2 = 2*(np.random.rand(outputLayerSize) - 0.5)
+    return w1, b1, w2, b2
+    
+def SGD(features, featuresResult, inputSize, outputSize, w1, b1, w2, b2):
+    """基于梯度下降的BP神经网络
+    @param fatures 训练样本的特征子
+    @param featuresResult 特征子对应结果
+    @param w1,b1,w2,b2 神经网络结构参数
+    """
+    #精度阈值
+    EP = 0.001
+    #学习步长
+    rate = 0.015
+    #特征子个数
+    N = len(features)
+    for times in range(1000):
+        y = np.zeros((outputSize, N), dtype = np.double)
+        for i in range(N):
+            y[featuresResult[i], i] = 1.0
+        #计算实际输出结果并计算误差
+        aH = sigmod(features@w1+b1)#行N*Hn
+        a = sigmod(aH@w2+b2)#行N*On
+        aT = a.T#On*N
+        aHT = aH.T#Hn*N
+        #是否满足精度
+        err = np.linalg.norm(y-aT, 2)
+        if err < EP:
+            break
+        delta = (y - aT)*(aT*(1.0-aT))#列On*N
+        deltaH = (w2@delta)*(aHT*(1.0-aHT))#列Hn*N
+        #计算梯度步长
+        w2 = w2 + rate*aHT@delta.T
+        b2 = b2 + rate*sum(delta.T)
+        w1 = w1 + rate*features.T@deltaH.T
+        b1 = b1 + rate*sum(deltaH.T)
+        
+    return w1, b1, w2, b2
+        
+def sigmod(M):
+    """变换值域
+    """
+    a = 1.0+np.exp(-M)
+    a = 1.0/a
+    return a
+
+def rec(features, w1, b1, w2, b2):
+    """识别
+    @param features 归一化特征向量
+    @param w1, b1, w2, b2 神经网络模型参数
+    
+    @return result 识别结果
+    """
+    result = []
+    N = len(features)#特征子个数
+    for n in range(N):
+        #计算实际输出结果
+        aH = sigmod(features[n]@w1+b1)#行
+        a = sigmod(aH@w2+b2)#行
+        result.append(np.argmax(a))
+    return result
