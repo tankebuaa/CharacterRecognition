@@ -1,4 +1,4 @@
-# -*- coding : utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import cv2
 import numpy as np
@@ -192,13 +192,13 @@ def adjust(image, cha, WD, HG):
     for i in range(len(cha)):
         pix = cha[i][0]#像素
         p = cha[i][1]#坐标值
-        h = HG/(p[1] - p[0])#字符高度缩放因子
-        w = WD/(p[3] - p[2])#字符宽度缩放因子
+        h = float(HG)/(p[1] - p[0])#字符高度缩放因子
+        w = float(WD)/(p[3] - p[2])#字符宽度缩放因子
         #存放归一化字符
-        I = np.zeros(HG*WD,dtype = np.double)
+        I = np.zeros(HG*WD,dtype = np.uint8)
         for pos in pix:
-            x = min(int(h*(pos[0] - p[0])), HG-1)
-            y = min(int((h+w)/2*(pos[1] - p[2])), WD-1)
+            x = min(np.round(h*(pos[0] - p[0])), HG-1)
+            y = min(np.round((h+w)/2*(pos[1] - p[2])), WD-1)
             I[x*WD+y] = 1
             image[x, y+i*WD] = 0
         Ic.append(I)
@@ -230,13 +230,13 @@ def SGD(features, featuresResult, inputSize, outputSize, w1, b1, w2, b2):
     rate = 0.015
     #特征子个数
     N = len(features)
-    for times in range(1000):
+    for times in range(10000):
         y = np.zeros((outputSize, N), dtype = np.double)
         for i in range(N):
             y[featuresResult[i], i] = 1.0
         #计算实际输出结果并计算误差
-        aH = sigmod(features@w1+b1)#行N*Hn
-        a = sigmod(aH@w2+b2)#行N*On
+        aH = sigmod(np.dot(features, w1)+b1)#行N*Hn
+        a = sigmod(np.dot(aH,w2)+b2)#行N*On
         aT = a.T#On*N
         aHT = aH.T#Hn*N
         #是否满足精度
@@ -244,11 +244,11 @@ def SGD(features, featuresResult, inputSize, outputSize, w1, b1, w2, b2):
         if err < EP:
             break
         delta = (y - aT)*(aT*(1.0-aT))#列On*N
-        deltaH = (w2@delta)*(aHT*(1.0-aHT))#列Hn*N
+        deltaH = (np.dot(w2,delta))*(aHT*(1.0-aHT))#列Hn*N
         #计算梯度步长
-        w2 = w2 + rate*aHT@delta.T
+        w2 = w2 + rate*np.dot(aHT,delta.T)
         b2 = b2 + rate*sum(delta.T)
-        w1 = w1 + rate*features.T@deltaH.T
+        w1 = w1 + rate*np.dot(features.T,deltaH.T)
         b1 = b1 + rate*sum(deltaH.T)
         
     return w1, b1, w2, b2
@@ -271,7 +271,7 @@ def rec(features, w1, b1, w2, b2):
     N = len(features)#特征子个数
     for n in range(N):
         #计算实际输出结果
-        aH = sigmod(features[n]@w1+b1)#行
-        a = sigmod(aH@w2+b2)#行
+        aH = sigmod(np.dot(features[n],w1)+b1)#行
+        a = sigmod(np.dot(aH,w2)+b2)#行
         result.append(np.argmax(a))
     return result

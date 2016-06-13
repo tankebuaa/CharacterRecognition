@@ -30,7 +30,7 @@ class MplData(object):
     
     def train(self):
         self.inputLayerSize = self.WD * self.HG
-        self.hiddenLayerSize = 10
+        self.hiddenLayerSize = 15
         self.outLayersize = 10
         self.featuresResult = np.array(4*[0,1,2,3,4,5,6,7,8,9])
         self.w1, self.b1, self.w2, self.b2 = recfunc.creat_net(self.inputLayerSize, self.hiddenLayerSize, self.outLayersize)

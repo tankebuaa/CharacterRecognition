@@ -25,12 +25,12 @@ class RecWindow(Ui_MainWindow):
     def open_file(self):
         """打开文件"""
         filename = QtGui.QFileDialog.getOpenFileName(self, caption='打开文件', directory='../images/', filter='')
-        self.mplwidget.open(filename)
+        self.mplwidget.open(str(filename))
     
     def save_file(self):
         """另存为"""
         filename = QtGui.QFileDialog.getSaveFileName(self, '保存图像', '../images/')
-        self.mplwidget.save_as(filename)
+        self.mplwidget.save_as(str(filename))
     
     def reload(self):
         """重新加载"""
